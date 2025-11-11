@@ -1,4 +1,6 @@
+// script.js
 document.addEventListener('DOMContentLoaded', () => {
+  /* ----------------- Compliment Logic ----------------- */
   const compliments = {
     daily: [
       'Your smile can light up a room.',
@@ -35,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('complimentBtn');
   const display = document.getElementById('compliment');
   const select = document.getElementById('categorySelect');
-  // keep last indices per category to avoid immediate repeats
   const lastIndex = { daily: -1, study: -1, coding: -1 };
 
   function pickRandom(category = 'daily') {
@@ -43,105 +44,93 @@ document.addEventListener('DOMContentLoaded', () => {
     if (list.length === 0) return '';
     if (list.length === 1) return list[0];
     let i;
-    do {
-      i = Math.floor(Math.random() * list.length);
-    } while (i === lastIndex[category]);
+    do { i = Math.floor(Math.random() * list.length); }
+    while (i === lastIndex[category]);
     lastIndex[category] = i;
     return list[i];
   }
 
   function showCompliment(text) {
     display.classList.remove('show');
-    void display.offsetWidth; // force reflow to restart animation
+    void display.offsetWidth; // restart CSS animation
     display.textContent = text;
     display.classList.add('show');
     display.setAttribute('aria-live', 'polite');
   }
 
-  btn.addEventListener('click', () => {
-    const category = select.value || 'daily';
-    const text = pickRandom(category);
-    showCompliment(text);
-  });
+  // 初始提示
+  (function init() {
+    const initialLabel = select.options[select.selectedIndex].text;
+    display.textContent = `Category: ${initialLabel}. Click the button to get a compliment.`;
+  })();
 
-  // Allow Enter/Space when focused on button
-  btn.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      btn.click();
-    }
-  });
-
-  // when category changes, update hint text
+  // 类别变化时提示
   select.addEventListener('change', () => {
     const label = select.options[select.selectedIndex].text;
     display.textContent = `Category: ${label}. Click the button to get a compliment.`;
     display.classList.remove('show');
   });
 
-  // set initial hint based on default
-  (function init() {
-    const initialLabel = select.options[select.selectedIndex].text;
-    display.textContent = `Category: ${initialLabel}. Click the button to get a compliment.`;
-  })();
+  // 键盘可达
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+  });
 
-  /* ----------------- Confetti / Particles ----------------- */
-  // Small canvas-based confetti effect. Lightweight and dependency-free.
+  /* ----------------- Confetti Module (delta-time + HiDPI safe) ----------------- */
   ;(function makeConfetti() {
     const canvas = document.createElement('canvas');
     canvas.id = 'confetti-canvas';
-    canvas.style.position = 'fixed';
-    canvas.style.left = '0';
-    canvas.style.top = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.pointerEvents = 'none';
-    canvas.style.zIndex = '9999';
+    Object.assign(canvas.style, {
+      position: 'fixed', left: '0', top: '0',
+      width: '100%', height: '100%',
+      pointerEvents: 'none', zIndex: '9999'
+    });
     document.body.appendChild(canvas);
 
-    const ctx = canvas.getContext('2d');
-    let width = 0;
-    let height = 0;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let CSS_W = 0, CSS_H = 0;
+    const MAX_SCALE = 1.75;
+
     function resize() {
-      width = canvas.width = Math.floor(window.innerWidth * devicePixelRatio || 1);
-      height = canvas.height = Math.floor(window.innerHeight * devicePixelRatio || 1);
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.scale(devicePixelRatio || 1, devicePixelRatio || 1);
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_SCALE);
+      CSS_W = window.innerWidth; CSS_H = window.innerHeight;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      canvas.width  = Math.max(1, Math.floor(CSS_W * dpr));
+      canvas.height = Math.max(1, Math.floor(CSS_H * dpr));
+      canvas.style.width = CSS_W + 'px';
+      canvas.style.height = CSS_H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // 坐标=CSS像素
     }
     window.addEventListener('resize', resize);
     resize();
 
     const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#C77DFF'];
-
-    function random(min, max) { return Math.random() * (max - min) + min; }
+    const rand = (a, b) => Math.random() * (b - a) + a;
 
     class Particle {
       constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        this.size = random(6, 12);
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-        this.rotation = random(0, Math.PI * 2);
-        const speed = random(2, 8);
-        const angle = random(-Math.PI / 2 - 0.8, -Math.PI / 2 + 0.8);
+        this.x = x; this.y = y;
+        this.size = rand(6, 12);
+        this.color = colors[(Math.random() * colors.length) | 0];
+        const speed = rand(2, 8);
+        const angle = rand(-Math.PI / 2 - 0.8, -Math.PI / 2 + 0.8);
         this.vx = Math.cos(angle) * speed;
         this.vy = Math.sin(angle) * speed;
+        this.rotation = rand(0, Math.PI * 2);
+        this.angularVelocity = rand(-0.2, 0.2);
         this.gravity = 0.18;
         this.friction = 0.995;
-        this.ttl = 80 + Math.floor(random(0, 40)); // frames to live
+        this.ttl = 80 + Math.floor(rand(0, 40)); // 基准帧计数
         this.age = 0;
-        this.angularVelocity = random(-0.2, 0.2);
         this.opacity = 1;
       }
-      update() {
-        this.vy += this.gravity;
-        this.vx *= this.friction;
-        this.vy *= this.friction;
-        this.x += this.vx;
-        this.y += this.vy;
-        this.rotation += this.angularVelocity;
-        this.age++;
+      update(delta = 1) {
+        this.vy += this.gravity * delta;
+        const f = Math.pow(this.friction, delta);
+        this.vx *= f; this.vy *= f;
+        this.x += this.vx * delta; this.y += this.vy * delta;
+        this.rotation += this.angularVelocity * delta;
+        this.age += delta;
         this.opacity = Math.max(0, 1 - this.age / this.ttl);
       }
       draw(ctx) {
@@ -150,79 +139,67 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
         ctx.fillStyle = this.color;
-        // draw rectangle as confetti
         ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size * 0.6);
         ctx.restore();
+      }
+      isDead() {
+        return this.age >= this.ttl || this.y > CSS_H + 50 || this.opacity <= 0.02;
       }
     }
 
     let particles = [];
     let running = false;
+    let rafId = null;
+    let last = 0;
 
     function emit(x, y, count = 24) {
-      for (let i = 0; i < count; i++) {
-        particles.push(new Particle(x, y));
-      }
-      if (!running) {
-        running = true;
-        requestAnimationFrame(loop);
-      }
+      for (let i = 0; i < count; i++) particles.push(new Particle(x, y));
+      if (!running) { running = true; last = performance.now(); rafId = requestAnimationFrame(loop); }
     }
 
-    function loop() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // update & draw
+    function loop(now) {
+      const delta = (now - last) / 16.67; // 相对 60fps
+      last = now;
+      ctx.clearRect(0, 0, CSS_W, CSS_H);
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
-        p.update();
+        p.update(Math.max(0.5, Math.min(delta, 2.5))); // clamp 防止后台超大步长
         p.draw(ctx);
-        if (p.age >= p.ttl || p.y > window.innerHeight + 50 || p.opacity <= 0.02) {
-          particles.splice(i, 1);
-        }
+        if (p.isDead()) particles.splice(i, 1);
       }
-      if (particles.length > 0) {
-        requestAnimationFrame(loop);
-      } else {
-        running = false;
-      }
+      if (particles.length > 0) rafId = requestAnimationFrame(loop);
+      else { running = false; rafId = null; }
     }
 
-    // expose a global helper used below
-    window.__fireConfetti = function (opts = {}) {
-      // opts: x, y in client coordinates, count
-      const count = typeof opts.count === 'number' ? opts.count : 28;
-      let x = opts.x, y = opts.y;
-      if (typeof x !== 'number' || typeof y !== 'number') {
-        x = window.innerWidth / 2;
-        y = window.innerHeight / 3;
+    // 全局触发/销毁（可选）
+    window.__fireConfetti = function ({ x, y, count } = {}) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        x = window.innerWidth / 2; y = window.innerHeight / 3;
       }
-      // convert to high-DPI canvas coordinates
-      const scale = devicePixelRatio || 1;
-      emit(x * scale, y * scale, count);
+      emit(x, y, Number.isFinite(count) ? count : 28);
     };
+    window.__destroyConfetti = function () {
+      particles = []; if (rafId) cancelAnimationFrame(rafId);
+      running = false; rafId = null;
+      window.removeEventListener('resize', resize);
+      canvas.remove();
+      delete window.__fireConfetti;
+      delete window.__destroyConfetti;
+    };
+
+    // 把 confetti 接到按钮点击
+    btn.addEventListener('click', () => {
+      const category = select.value || 'daily';
+      const text = pickRandom(category);
+      showCompliment(text);
+      try {
+        const r = btn.getBoundingClientRect();
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        window.__fireConfetti({ x, y, count: 32 });
+      } catch {
+        window.__fireConfetti();
+      }
+    });
   })();
-
-  // trigger confetti when a compliment is shown
-  const originalShow = showCompliment;
-  function showComplimentWithConfetti(text) {
-    originalShow(text);
-    // pick a point near the button to emit confetti
-    try {
-      const btnRect = document.getElementById('complimentBtn').getBoundingClientRect();
-      const x = btnRect.left + btnRect.width / 2;
-      const y = btnRect.top + btnRect.height / 2;
-      // fire confetti with moderate count
-      window.__fireConfetti({ x, y, count: 32 });
-    } catch (e) {
-      window.__fireConfetti();
-    }
-  }
-
-  // replace handler to include confetti
-  btn.removeEventListener && btn.removeEventListener('click', null);
-  btn.addEventListener('click', () => {
-    const category = select.value || 'daily';
-    const text = pickRandom(category);
-    showComplimentWithConfetti(text);
-  });
 });
