@@ -18,9 +18,7 @@ They focus on **interaction, animation, and emotion** — not utility.
 - ☁️ **GitHub Pages** — deploy and share instantly, no backend required  
 
 ## 💬 Purpose
-> This repository is my creative coding playground —  
-<<<<<<< HEAD
+> This repository is my creative coding playground
 > quick experiments, micro interactions, and “vibe-driven” web sketches.
 =======
 > quick experiments, micro interactions, and “vibe-driven” web sketches.
->>>>>>> 6b9fc60 (initial commit - vibe coding projects)
