@@ -6,10 +6,10 @@ A collection of small front-end experiments and “useless web” projects creat
 These projects are made in under 3 hours each using GitHub Copilot and creative coding principles.
 They focus on **interaction, animation, and emotion** — not utility.
 
-## 🧩 Projects
+## Projects
 | Project | Description | Live Demo |
 |----------|--------------|-----------|
-| **Compliment Machine** | Click to get random compliments. | [Demo](https://yourusername.github.io/vibe-lab/compliment-machine/) |
+| **Compliment Machine** | Click to get random compliments. | [Demo](https://n01715807.github.io/vibe-coding/Compliment%20Generator/index.html) |
 
 ## 🛠 Tech Stack
 - 🎨 **Vibe Coding Mindset** — fast, expressive, and emotion-driven front-end creation  
@@ -19,4 +19,8 @@ They focus on **interaction, animation, and emotion** — not utility.
 
 ## 💬 Purpose
 > This repository is my creative coding playground —  
+<<<<<<< HEAD
 > quick experiments, micro interactions, and “vibe-driven” web sketches.
+=======
+> quick experiments, micro interactions, and “vibe-driven” web sketches.
+>>>>>>> 6b9fc60 (initial commit - vibe coding projects)
