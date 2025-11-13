@@ -17,5 +17,5 @@ Built for the **Vibe Coding** — designed to blend productivity with inspiratio
 
 ## Deployment
 This project is hosted on **GitHub Pages**.  
-**Live demo:** [https://n01715807.github.io/vibe-coding/Inspiration%20Timer/index.html](https://n01715807.github.io/vibe-coding/Inspiration%20Timer/index.html)  
-**Source code:** [https://github.com/N01715807/vibe-coding/tree/main/Inspiration%20Timer](https://github.com/N01715807/vibe-coding/tree/main/Inspiration%20Timer)
+**Live demo:** https://n01715807.github.io/vibe-coding/Inspiration%20Timer/index.html
+**Source code:** https://github.com/N01715807/vibe-coding/tree/main/Inspiration%20Timer
