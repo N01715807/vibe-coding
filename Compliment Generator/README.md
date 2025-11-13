@@ -1,7 +1,7 @@
 # Compliment Generator 🌈  
 
 A lighthearted “Useless Web” project that compliments you every time you click the button.  
-Built for the **Vibe Coding** assignment — created in less than three hours using GitHub Copilot and pure front-end code.
+Built for the **Vibe Coding**  — created in less than three hours using GitHub Copilot and pure front-end code.
 
 ## Features
 - Animated color-shifting background (CSS only)  

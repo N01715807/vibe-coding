@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Countdown Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="timer-wrapper">
+            <!-- Animated background elements -->
+            <div class="background-orbs">
+                <div class="orb orb-1"></div>
+                <div class="orb orb-2"></div>
+                <div class="orb orb-3"></div>
+            </div>
+
+            <!-- Main timer display -->
+            <div class="timer-display">
+                <div class="timer-circle">
+                    <div class="progress-ring">
+                        <svg width="280" height="280">
+                            <circle cx="140" cy="140" r="130" class="progress-circle"></circle>
+                        </svg>
+                    </div>
+                    <div class="time-text">
+                        <div class="time" id="timeDisplay">00:00</div>
+                        <div class="label">Time Remaining</div>
+                    </div>
+                </div>
+
+                <!-- Rotating prompts -->
+                <div class="prompt-container">
+                    <div class="prompt-text" id="promptText">Enter your time and get started!</div>
+                </div>
+            </div>
+
+            <!-- Controls section -->
+            <div class="controls">
+                <div class="input-group">
+                    <label for="minutesInput">Minutes</label>
+                    <input type="number" id="minutesInput" min="0" max="99" value="5" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label for="secondsInput">Seconds</label>
+                    <input type="number" id="secondsInput" min="0" max="59" value="0" placeholder="0">
+                </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="buttons">
+                <button class="btn btn-primary" id="startBtn">Start</button>
+                <button class="btn btn-secondary" id="pauseBtn" disabled>Pause</button>
+                <button class="btn btn-danger" id="resetBtn" disabled>Reset</button>
+            </div>
+
+            <!-- Status indicator -->
+            <div class="status" id="status">Ready</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

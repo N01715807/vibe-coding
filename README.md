@@ -10,6 +10,7 @@ They focus on **interaction, animation, and emotion** — not utility.
 | Project | Description | Live Demo |
 |----------|--------------|-----------|
 | **Compliment Machine** | Click to get random compliments. | [Demo](https://n01715807.github.io/vibe-coding/Compliment%20Generator/index.html) |
+| **Inspiration Timer** | Countdown with rotating prompts. | [Demo](https://n01715807.github.io/vibe-coding/Compliment%20Generator/index.html) |
 
 ## 🛠 Tech Stack
 - 🎨 **Vibe Coding Mindset** — fast, expressive, and emotion-driven front-end creation  
@@ -19,6 +20,4 @@ They focus on **interaction, animation, and emotion** — not utility.
 
 ## 💬 Purpose
 > This repository is my creative coding playground
-> quick experiments, micro interactions, and “vibe-driven” web sketches.
-=======
 > quick experiments, micro interactions, and “vibe-driven” web sketches.
